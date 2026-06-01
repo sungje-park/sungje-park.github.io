@@ -1,0 +1,42 @@
+{{- $selectedOnly := eq (.Get "selected") "true" -}}
+{{- $linkOrder := slice "paper" "poster" "code" "slides" "project" "website" -}}
+
+<div class="publication-list">
+  {{- range hugo.Data.publications }}
+    {{- if or (not $selectedOnly) .selected }}
+      <article class="publication-item">
+        <h3 class="publication-title">{{ .title }}</h3>
+
+        {{- with .authors }}
+          <p class="publication-authors">{{ delimit . ", " }}</p>
+        {{- end }}
+
+        {{- if or .venue .designation .year }}
+          <p class="publication-meta">
+            {{- .venue -}}
+            {{- with .designation }} ({{ . }}){{ end -}}
+            {{- if and .venue .year }}, {{ end -}}
+            {{- .year -}}
+          </p>
+        {{- end }}
+
+        {{- with .links }}
+          {{- $links := . -}}
+          <div class="publication-links">
+            {{- range $linkOrder }}
+              {{- $label := . -}}
+              {{- with index $links $label }}
+                <a href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ title $label }}</a>
+              {{- end }}
+            {{- end }}
+            {{- range $label, $url := $links }}
+              {{- if not (in $linkOrder $label) }}
+                <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ title $label }}</a>
+              {{- end }}
+            {{- end }}
+          </div>
+        {{- end }}
+      </article>
+    {{- end }}
+  {{- end }}
+</div>

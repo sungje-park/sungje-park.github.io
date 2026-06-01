@@ -1,0 +1,52 @@
+baseURL = '/'
+locale = 'en-us'
+title = 'Sungje Park'
+theme = 'PaperMod'
+
+[pagination]
+pagerSize = 5
+
+[params]
+description = "Personal website of Sungje Park"
+ShowReadingTime = true
+ShowPostNavLinks = true
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowShareButtons = false
+
+[[params.socialIcons]]
+name = "linkedin"
+url = "https://linkedin.com/in/sungje-park"
+
+[[params.socialIcons]]
+name = "googlescholar"
+url = "https://scholar.google.com/citations?user=AEllvtYAAAAJ"
+
+[[params.socialIcons]]
+name = "github"
+url = "https://github.com/sungje-park"
+
+[params.assets]
+disableFingerprinting = false
+
+[params.math]
+enable = true
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[menu]
+
+  [[menu.main]]
+  identifier = "Home"
+  name = "About"
+  url = "/"
+  weight = 10
+
+  [[menu.main]]
+  identifier = "blog"
+  name = "Blog"
+  url = "/posts/"
+  weight = 20

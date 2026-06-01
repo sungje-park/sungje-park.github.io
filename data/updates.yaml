@@ -1,0 +1,13 @@
+- date: "May 2026"
+  title: "NSF GRFP Awarded!"
+  description: "I am grateful to have received the NSF GRFP award to continue my work on machine learning and safe autonomy. Thank you to everyone who has supported me along the way!"
+  label: "news"
+  link: "/files/nsf_grfp_research_plan.pdf"
+  link_label: "Research Plan"
+
+- date: "Dec 2025"
+  title: "NeurIPS 2025"
+  description: "I will be presenting my work on the importance of integration schemes for bsde-based deep pde solvers at NeurIPS 2025."
+  label: "paper"
+  link: "https://neurips.cc/virtual/2025/loc/san-diego/poster/116412"
+  link_label: "Paper"

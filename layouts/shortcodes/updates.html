@@ -1,0 +1,62 @@
+{{- $updates := hugo.Data.updates -}}
+{{- $limit := .Get "limit" -}}
+{{- $showMore := eq (.Get "more") "true" -}}
+{{- $compact := eq (.Get "compact") "true" -}}
+{{- $moreURL := .Get "more_url" | default "/updates/" -}}
+
+{{- with $limit }}
+  {{- $updates = first (. | int) $updates -}}
+{{- end }}
+
+{{- with $updates }}
+  <div class="update-panel{{ if $compact }} update-panel-compact{{ end }}">
+    {{- range . }}
+      {{- $update := . -}}
+      {{- $date := $update.date | default "" -}}
+      {{- $label := or (index $update "label") (index $update "category") (index $update "tag") -}}
+      {{- $title := $update.title | default "" -}}
+      {{- $description := $update.description | default "" -}}
+      {{- $link := $update.link | default "" -}}
+      <article class="update-item">
+        {{- if or $date $label }}
+          <div class="update-meta">
+            {{- with $date }}
+              <span class="update-date">{{ . }}</span>
+            {{- end }}
+            {{- with $label }}
+              <span class="update-label">{{ . }}</span>
+            {{- end }}
+          </div>
+        {{- end }}
+
+        {{- if or $title $description $link }}
+          <div class="update-body">
+            {{- if or $title $link }}
+              <div class="update-heading">
+                {{- with $title }}
+                  <h3 class="update-title">{{ . }}</h3>
+                {{- end }}
+
+                {{- with $link }}
+                  <a class="update-title-link" href="{{ . }}" target="_blank" rel="noopener noreferrer">
+                    {{- default "link" (or (index $update "link_label") (index $update "linkLabel")) -}}
+                  </a>
+                {{- end }}
+              </div>
+            {{- end }}
+
+            {{- with $description }}
+              <div class="update-description">{{ . | markdownify }}</div>
+            {{- end }}
+          </div>
+        {{- end }}
+      </article>
+    {{- end }}
+
+    {{- if $showMore }}
+      <div class="updates-more">
+        <a href="{{ $moreURL | relURL }}">More</a>
+      </div>
+    {{- end }}
+  </div>
+{{- end }}

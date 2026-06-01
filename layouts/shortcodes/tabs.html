@@ -1,0 +1,31 @@
+{{- $labels := split (.Get "labels" | default "Tab 1,Tab 2") "," -}}
+{{- $panels := split .Inner "<!-- tab -->" -}}
+{{- $group := printf "tabs-%d" .Ordinal -}}
+
+<div class="tabs">
+  {{- range $index, $label := $labels }}
+    <input
+      class="tab-input"
+      type="radio"
+      id="{{ $group }}-{{ $index }}"
+      name="{{ $group }}"
+      {{ if eq $index 0 }}checked{{ end }}
+    >
+  {{- end }}
+
+  <div class="tab-list" role="tablist">
+    {{- range $index, $label := $labels }}
+      <label class="tab-label" for="{{ $group }}-{{ $index }}" role="tab">
+        {{ trim $label " " }}
+      </label>
+    {{- end }}
+  </div>
+
+  <div class="tab-panels">
+    {{- range $panels }}
+      <div class="tab-panel">
+        {{ . | markdownify }}
+      </div>
+    {{- end }}
+  </div>
+</div>
