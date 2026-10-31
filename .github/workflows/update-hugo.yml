@@ -1,0 +1,74 @@
+name: Update Hugo
+
+on:
+  schedule:
+    - cron: "35 16 * * 1" # Mondays at 16:35 UTC.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-hugo
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Check latest stable Hugo release
+        id: latest
+        run: |
+          latest_tag="$(gh api repos/gohugoio/hugo/releases/latest --jq '.tag_name')"
+          latest="${latest_tag#v}"
+          current="$(tr -d '\r\n' < .hugo-version)"
+          for version in "$current" "$latest"; do
+            if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Invalid stable Hugo version: $version" >&2
+              exit 1
+            fi
+          done
+          printf 'version=%s\n' "$latest" >> "$GITHUB_OUTPUT"
+          if [[ "$latest" != "$current" && \
+                "$(printf '%s\n' "$current" "$latest" | sort -V | tail -n 1)" == "$latest" ]]; then
+            printf '%s\n' "$latest" > .hugo-version
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Propose Hugo update
+        if: steps.latest.outputs.changed == 'true'
+        id: proposal
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ github.token }}
+          branch: dependency/hugo
+          base: main
+          delete-branch: true
+          add-paths: .hugo-version
+          commit-message: "Update Hugo to ${{ steps.latest.outputs.version }}"
+          title: "Update Hugo to ${{ steps.latest.outputs.version }}"
+          body: |
+            Update the shared local and CI Hugo pin to the latest stable release.
+
+            Release notes: https://github.com/gohugoio/hugo/releases/tag/v${{ steps.latest.outputs.version }}
+
+            The Hugo build workflow is dispatched on this branch. Review its warning-free production build and the rendered site before merging.
+      - name: Run build checks on the update branch
+        if: steps.proposal.outputs.pull-request-number != ''
+        # Explicit dispatch runs with GITHUB_TOKEN and only builds this non-main branch.
+        run: gh workflow run hugo.yml --repo "$GITHUB_REPOSITORY" --ref dependency/hugo

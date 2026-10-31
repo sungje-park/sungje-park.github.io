@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+site_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+version="$(tr -d '\r\n' < "$site_root/.hugo-version")"
+if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Invalid Hugo version in .hugo-version: $version" >&2
+    exit 1
+fi
+
+case "$(uname -s)" in
+    Darwin)
+        asset="hugo_extended_${version}_darwin-universal.pkg"
+        ;;
+    Linux)
+        case "$(uname -m)" in
+            x86_64) architecture=amd64 ;;
+            aarch64|arm64) architecture=arm64 ;;
+            *) echo "Unsupported Linux architecture: $(uname -m)" >&2; exit 1 ;;
+        esac
+        asset="hugo_extended_${version}_linux-${architecture}.tar.gz"
+        ;;
+    *) echo "This Hugo launcher supports macOS and Linux." >&2; exit 1 ;;
+esac
+
+tool_dir="$site_root/.tools/hugo/$version"
+hugo_bin="$tool_dir/hugo"
+if [[ ! -x "$hugo_bin" ]]; then
+    download_dir="$(mktemp -d "${TMPDIR:-/tmp}/site-hugo.XXXXXX")"
+    trap 'rm -rf -- "$download_dir"' EXIT
+    release_url="https://github.com/gohugoio/hugo/releases/download/v$version"
+    echo "Downloading Hugo $version ($asset)…" >&2
+    curl --fail --location --silent --show-error --retry 3 \
+        "$release_url/$asset" --output "$download_dir/$asset"
+    curl --fail --location --silent --show-error --retry 3 \
+        "$release_url/hugo_${version}_checksums.txt" --output "$download_dir/checksums.txt"
+    expected="$(awk -v asset="$asset" '$2 == asset { print $1 }' "$download_dir/checksums.txt")"
+    if [[ ! "$expected" =~ ^[0-9a-f]{64}$ ]]; then
+        echo "Missing or invalid published checksum for $asset" >&2
+        exit 1
+    fi
+    if command -v sha256sum >/dev/null 2>&1; then
+        actual="$(sha256sum "$download_dir/$asset" | awk '{ print $1 }')"
+    else
+        actual="$(shasum -a 256 "$download_dir/$asset" | awk '{ print $1 }')"
+    fi
+    if [[ "$actual" != "$expected" ]]; then
+        echo "Hugo download checksum mismatch; refusing to run it." >&2
+        exit 1
+    fi
+
+    if [[ "$asset" == *.pkg ]]; then
+        # Expand the signed macOS installer without installing system-wide or running scripts.
+        pkgutil --expand-full "$download_dir/$asset" "$download_dir/package"
+        extracted_bin="$(find "$download_dir/package" -type f -name hugo -print)"
+    else
+        tar -xzf "$download_dir/$asset" -C "$download_dir" hugo
+        extracted_bin="$download_dir/hugo"
+    fi
+    if [[ ! -f "$extracted_bin" ]]; then
+        echo "Expected one Hugo executable in the release package." >&2
+        exit 1
+    fi
+    mkdir -p "$tool_dir"
+    install -m 755 "$extracted_bin" "$hugo_bin"
+    rm -rf -- "$download_dir"
+    trap - EXIT
+fi
+
+actual_version="$("$hugo_bin" version)"
+reported_version="${actual_version#hugo v}"
+reported_version="${reported_version%% *}"
+release_number="${reported_version%%[-+]*}"
+if [[ "$release_number" != "$version" || "$reported_version" != *+extended* ]]; then
+    echo "Unexpected Hugo executable: $actual_version" >&2
+    exit 1
+fi
+
+export HUGO_CACHEDIR="${HUGO_CACHEDIR:-$site_root/.tools/hugo-cache}"
+exec "$hugo_bin" "$@"

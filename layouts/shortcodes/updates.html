@@ -17,6 +17,10 @@
       {{- $title := $update.title | default "" -}}
       {{- $description := $update.description | default "" -}}
       {{- $link := $update.link | default "" -}}
+      {{- $upcoming := false -}}
+      {{- with $update.event_month }}
+        {{- $upcoming = ge . (now.Format "2006-01") -}}
+      {{- end }}
       <article class="update-item">
         {{- if or $date $label }}
           <div class="update-meta">
@@ -26,6 +30,7 @@
             {{- with $label }}
               <span class="update-label">{{ . }}</span>
             {{- end }}
+            {{- if $upcoming }}<span class="update-status">Upcoming</span>{{ end }}
           </div>
         {{- end }}
 
@@ -34,11 +39,15 @@
             {{- if or $title $link }}
               <div class="update-heading">
                 {{- with $title }}
-                  <h3 class="update-title">{{ . }}</h3>
+                  {{- if $.Page.IsHome }}
+                    <h3 class="update-title">{{ . }}</h3>
+                  {{- else }}
+                    <h2 class="update-title">{{ . }}</h2>
+                  {{- end }}
                 {{- end }}
 
                 {{- with $link }}
-                  <a class="update-title-link" href="{{ . }}" target="_blank" rel="noopener noreferrer">
+                  <a class="update-title-link" href="{{ partial "site-url.html" . }}" target="_blank" rel="noopener noreferrer" aria-label="{{ default "Link" (or (index $update "link_label") (index $update "linkLabel")) }}: {{ $title }}">
                     {{- default "link" (or (index $update "link_label") (index $update "linkLabel")) -}}
                   </a>
                 {{- end }}
@@ -55,7 +64,7 @@
 
     {{- if $showMore }}
       <div class="updates-more">
-        <a href="{{ $moreURL | relURL }}">More</a>
+        <a href="{{ partial "site-url.html" $moreURL }}">All updates</a>
       </div>
     {{- end }}
   </div>

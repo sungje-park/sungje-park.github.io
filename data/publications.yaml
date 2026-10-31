@@ -1,3 +1,17 @@
+- title: "Forward Trajectory Steering for Hamilton-Jacobi Reachability Analysis"
+  authors:
+    - "Sungje Park"
+    - "Stephen Tu"
+  venue: "IEEE CDC"
+  designation: "To appear"
+  year: 2026
+  image: "images/publications/steer2reach.png"
+  image_alt: "Vertical drone trajectories over a learned safety value function, with floor and ceiling constraints."
+  summary: "Forward trajectory steering guides collocation sampling for learning Hamilton–Jacobi safety value functions."
+  links:
+    paper: "https://arxiv.org/abs/2608.11480"
+    code: "https://github.com/sungje-park/steer2reach"
+
 - title: "Integration Matters for Learning PDEs with Backward SDEs"
   authors:
     - "Sungje Park"
@@ -5,12 +19,13 @@
   venue: "NeurIPS"
   designation: "Spotlight"
   year: 2025
-  type: "conference"
+  image: "images/publications/heun-bsde.png"
+  image_alt: "Heun-BSDE loss curves for several time step sizes, with their minima aligned with the true parameter."
+  summary: "Stochastic Heun integration addresses discretization bias in BSDE-based deep PDE solvers."
   links:
     paper: "https://arxiv.org/abs/2505.01078"
     poster: "https://neurips.cc/virtual/2025/loc/san-diego/poster/116412"
     code: "https://github.com/sungje-park/heunbsde"
-  selected: true
 
 - title: "Application of Reinforcement Learning for Autonomous Dynamic Soaring"
   authors:
@@ -19,6 +34,8 @@
     - "Vladimir Golubev"
   venue: "AIAA SciTech"
   year: 2025
-  type: "conference"
+  image: "images/publications/dynamic-soaring-figure-1.png"
+  image_alt: "Figure 1: typical dynamic soaring cycles showing windward climbs, leeward descents, and high- and low-altitude turns."
+  summary: "Reinforcement learning for UAV maneuvers that extract energy from wind gradients."
   links:
     paper: "https://arc.aiaa.org/doi/abs/10.2514/6.2025-2290"

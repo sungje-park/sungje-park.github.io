@@ -1,0 +1,25 @@
+{{- $src := .Get "photo" -}}
+{{- $photo := .Page.Resources.GetMatch $src -}}
+{{- if not $photo }}{{ $photo = resources.Get $src }}{{ end -}}
+<div class="about-intro">
+  <div class="about-intro-copy">{{ .Inner | markdownify }}</div>
+  {{- with $photo }}
+    {{- $portrait := .Fill "440x440 Center" }}
+    <aside class="profile-summary" aria-label="At a glance">
+      <figure class="profile-photo">
+        <img src="{{ $portrait.RelPermalink }}" width="{{ $portrait.Width }}" height="{{ $portrait.Height }}" alt="Sungje Park" loading="eager" fetchpriority="high" decoding="async">
+      </figure>
+      <div class="profile-details">
+        <p>USC · Electrical Engineering</p>
+        <p>NSF Graduate Research Fellow</p>
+        <nav id="contact" class="profile-links" aria-label="Profile contact links">
+          <a href="mailto:sungjepa@usc.edu">sungjepa@usc.edu</a>
+          {{- with site.Params.cvURL }}
+          <span class="profile-link-separator" aria-hidden="true"></span>
+          <a href="{{ partial "site-url.html" . }}">CV</a>
+          {{- end }}
+        </nav>
+      </div>
+    </aside>
+  {{- end }}
+</div>

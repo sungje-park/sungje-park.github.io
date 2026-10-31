@@ -7,7 +7,8 @@ theme = 'PaperMod'
 pagerSize = 5
 
 [params]
-description = "Personal website of Sungje Park"
+description = "Sungje Park is a USC Electrical Engineering PhD student interested in developing safe and robust methods for learning-based autonomous systems."
+cvURL = "files/park_sungje_cv.pdf"
 ShowReadingTime = true
 ShowPostNavLinks = true
 ShowBreadCrumbs = true
@@ -29,9 +30,6 @@ url = "https://github.com/sungje-park"
 [params.assets]
 disableFingerprinting = false
 
-[params.math]
-enable = true
-
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
@@ -44,6 +42,12 @@ enable = true
   name = "About"
   url = "/"
   weight = 10
+
+  [[menu.main]]
+  identifier = "publications"
+  name = "Publications"
+  url = "/#publications"
+  weight = 15
 
   [[menu.main]]
   identifier = "blog"

@@ -1,5 +1,6 @@
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="header">
-    <nav class="header-nav">
+    <nav class="header-nav" aria-label="Main navigation">
         <div class="logo">
             {{- $label_text := (site.Params.label.text | default site.Title) }}
             {{- if site.Title }}
@@ -7,10 +8,7 @@
                 {{- if site.Params.label.icon }}
                 {{- $img := resources.Get site.Params.label.icon }}
                 {{- if $img }}
-                    {{- $processableFormats := (slice "jpg" "jpeg" "png" "tif" "bmp" "gif") -}}
-                    {{- if hugo.IsExtended -}}
-                        {{- $processableFormats = $processableFormats | append "webp" -}}
-                    {{- end -}}
+                    {{- $processableFormats := (slice "jpg" "jpeg" "png" "tif" "bmp" "gif" "webp") -}}
                     {{- $prod := (hugo.IsProduction | or (eq site.Params.env "production")) }}
                     {{- if and (in $processableFormats $img.MediaType.SubType) (eq $prod true)}}
                         {{- if site.Params.label.iconHeight }}
@@ -19,10 +17,10 @@
                             {{- $img = $img.Resize "x30" }}
                         {{- end }}
                     {{- end }}
-                    <img src="{{ $img.Permalink }}" alt="" aria-label="logo"
+                    <img src="{{ $img.Permalink }}" alt=""
                         height="{{- site.Params.label.iconHeight | default "30" -}}">
                 {{- else }}
-                <img src="{{- site.Params.label.icon | absURL -}}" alt="" aria-label="logo"
+                <img src="{{- site.Params.label.icon | absURL -}}" alt=""
                     height="{{- site.Params.label.iconHeight | default "30" -}}">
                 {{- end -}}
                 {{- else if hasPrefix site.Params.label.iconSVG "<svg" }}
@@ -67,10 +65,10 @@
                         {{- range . -}}
                         {{- if ne $lang .Lang }}
                         <li>
-                            <a href="{{- .Permalink -}}" title="{{ .Language.Params.languageAltTitle | default (.Language.LanguageName | emojify) | default (.Lang | title) }}"
-                                aria-label="{{ .Language.LanguageName | default (.Lang | title) }}">
-                                {{- if (and site.Params.displayFullLangName (.Language.LanguageName)) }}
-                                {{- .Language.LanguageName | emojify -}}
+                            <a href="{{- .Permalink -}}" title="{{ .Language.Params.languageAltTitle | default (.Language.Label | emojify) | default (.Lang | title) }}"
+                                aria-label="{{ .Language.Label | default (.Lang | title) }}">
+                                {{- if (and site.Params.displayFullLangName (.Language.Label)) }}
+                                {{- .Language.Label | emojify -}}
                                 {{- else }}
                                 {{- .Lang | title -}}
                                 {{- end -}}
@@ -84,32 +82,19 @@
             </div>
             {{- end }}
         </div>
+        <details class="mobile-navigation">
+            <summary aria-controls="mobile-menu" aria-label="Navigation menu" title="Navigation menu">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </summary>
+            <ul id="mobile-menu" class="menu mobile-menu">
+                {{ partial "menu-links.html" . }}
+            </ul>
+        </details>
         <div class="menu-social">
-            {{- $currentPage := . }}
-            <ul id="menu" class="menu">
-                {{- range site.Menus.main }}
-                {{- $menu_item_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | absLangURL }}
-                {{- $page_url:= $currentPage.Permalink | absLangURL }}
-                {{- $is_search := eq (site.GetPage .KeyName).Layout `search` }}
-                <li>
-                    <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }} {{- cond $is_search (" (Alt + /)" | safeHTMLAttr) ("" | safeHTMLAttr ) }}"
-                    {{- cond $is_search (" accesskey=/" | safeHTMLAttr) ("" | safeHTMLAttr ) }}>
-                        <span {{- if eq $menu_item_url $page_url }} class="active" {{- end }}>
-                            {{- .Pre }}
-                            {{- .Name -}}
-                            {{ .Post -}}
-                        </span>
-                        {{- if (findRE "://" .URL) }}&nbsp;
-                        <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
-                            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
-                            <path d="M15 3h6v6"></path>
-                            <path d="M10 14L21 3"></path>
-                        </svg>
-                        {{- end }}
-                    </a>
-                </li>
-                {{- end }}
+            <ul id="menu" class="menu desktop-menu">
+                {{ partial "menu-links.html" . }}
             </ul>
             {{- if site.Params.socialIcons }}
             {{ partial "social_icons.html" (dict "align" "") }}

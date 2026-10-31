@@ -1,0 +1,15 @@
+{{- if lt hugo.Version "0.158.0" }}
+{{- errorf "Hugo v0.158.0 or greater is required. Use ./scripts/hugo for the pinned version." }}
+{{- end -}}
+<!DOCTYPE html>
+{{- $theme := site.Params.defaultTheme | default "auto" }}
+<html lang="{{ .Language.Locale }}" dir="{{ .Language.Direction | default "auto" }}" data-theme="{{ $theme }}">
+<head>{{- partial "head.html" . }}</head>
+<body{{ if (or (ne .Kind "page") (eq .Layout "archives") (eq .Layout "search")) }} class="list"{{ end }} id="top">
+  {{ partialCached "header.html" . .Page -}}
+  <main class="main" id="main-content" tabindex="-1">
+    {{- block "main" . }}{{ end }}
+  </main>
+  {{ partialCached "footer.html" . .Layout .Kind (.Param "hideFooter") (.Param "ShowCodeCopyButtons") -}}
+</body>
+</html>
