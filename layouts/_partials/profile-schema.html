@@ -1,0 +1,25 @@
+{{- $sameAs := slice }}
+{{- range site.Params.socialIcons }}
+  {{- $sameAs = $sameAs | append .url }}
+{{- end }}
+{{- $person := dict
+  "@type" "Person"
+  "@id" (printf "%s#person" .Permalink)
+  "name" site.Title
+  "url" .Permalink
+  "description" (.Description | default site.Params.description | plainify)
+  "sameAs" $sameAs
+}}
+{{- with .Resources.GetMatch "images/sungje-park.jpg" }}
+  {{- $portrait := .Fill "440x440 Center" }}
+  {{- $person = merge $person (dict "image" $portrait.Permalink) }}
+{{- end }}
+{{- $profile := dict
+  "@context" "https://schema.org"
+  "@type" "ProfilePage"
+  "@id" (printf "%s#profile" .Permalink)
+  "url" .Permalink
+  "name" .Title
+  "mainEntity" $person
+}}
+<script type="application/ld+json">{{ $profile | jsonify | safeJS }}</script>

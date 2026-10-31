@@ -54,7 +54,8 @@ Hugo prefers project templates under `layouts/` over the matching theme template
 - `_partials/header.html`: desktop navigation, mobile dropdown, social links, and accessibility.
 - `_partials/menu-links.html`: shared navigation destinations and CV link for both layouts.
 - `_partials/extend_footer.html`: loads the mobile menu's close-on-selection, outside-click, and Escape behavior.
-- `_partials/head.html`: homepage title and favicon tags.
+- `_partials/head.html`: homepage title, favicon tags, and homepage profile schema selection.
+- `_partials/profile-schema.html`: homepage `ProfilePage` metadata with a `Person` and the site's public profile links.
 - `_partials/social_icons.html`: accessible labels for social links.
 - `_partials/site-url.html`: local resource links that include the configured site subpath.
 - `_default/list.html` and the shortcodes: site-specific content and publication/update layouts.

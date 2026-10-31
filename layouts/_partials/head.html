@@ -190,5 +190,9 @@
 {{- partial "google_analytics.html" . }}
 {{- partial "templates/opengraph.html" . }}
 {{- partial "templates/twitter_cards.html" . }}
+{{- if .IsHome }}
+{{- partial "profile-schema.html" . }}
+{{- else }}
 {{- partial "templates/schema_json.html" . }}
+{{- end }}
 {{- end -}}
