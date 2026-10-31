@@ -1,4 +1,4 @@
-baseURL = '/'
+baseURL = 'https://sungjepark.com/'
 locale = 'en-us'
 title = 'Sungje Park'
 theme = 'PaperMod'

@@ -2,6 +2,8 @@
 
 This site uses Hugo and the PaperMod Git submodule. The exact Hugo release is in `.hugo-version`; Git records the exact PaperMod commit. Use the project launcher for local work so your builds match GitHub Actions.
 
+The production domain is `https://sungjepark.com/`. Configure it in the repository's GitHub Pages settings; the deployment workflow uses the domain returned by GitHub. Because this site deploys through GitHub Actions, a `CNAME` file is not required.
+
 ## Local development
 
 ```sh
