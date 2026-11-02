@@ -15,7 +15,7 @@ Before joining USC, I studied Aerospace Engineering at Embry-Riddle Aeronautical
 
 {{< /about-intro >}}
 
-Outside of USC, I am best spotted pedaling up the hills of LA, searching for fish along riverbanks and lakeshores, and trekking up alpine trails. In the winter months, I migrate to the nearest snowy peaks whenever time and weather permit.
+Outside of USC, I am best spotted pedaling up the hills of LA, searching for fish along riverbanks and lakeshores, and trekking up alpine trails. In the winter months, I migrate to the nearest snowy peaks.
 
 <p class="research-interests"><span class="research-interests-label">Research interests:</span> <span class="research-interest-tag">Safe autonomy</span> <span class="research-interest-tag">Robust learning</span> <span class="research-interest-tag">Scientific machine learning</span></p>
 
